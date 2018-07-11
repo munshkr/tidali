@@ -19,7 +19,7 @@ libs = ["Prelude","Sound.Tidal.Context","Sound.OSC.Datum"
        -- , "Sound.Tidal.Simple"
        ]
 
-libdir = "/usr/local/bin/tidal-libs"
+libdir = "/usr/local/tidali/haskell-libs"
 
 hintJob  :: (MVar String, MVar Response) -> IO ()
 hintJob (mIn, mOut) =
