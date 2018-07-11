@@ -68,6 +68,7 @@ hintJob (mIn, mOut) =
                 liftIO $ takeMVar mIn
                 return ()
 
+-- ultra-minimal for now, just takes a line and interprets it
 main = do mIn <- newEmptyMVar
           mOut <- newEmptyMVar
           forkIO $ hintJob (mIn, mOut)
