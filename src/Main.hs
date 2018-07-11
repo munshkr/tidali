@@ -19,6 +19,8 @@ libs = ["Prelude","Sound.Tidal.Context","Sound.OSC.Datum"
        -- , "Sound.Tidal.Simple"
        ]
 
+libdir = "/usr/local/bin/tidal-libs"
+
 hintJob  :: (MVar String, MVar Response) -> IO ()
 hintJob (mIn, mOut) =
   do installHandler sigINT Ignore Nothing
@@ -27,7 +29,7 @@ hintJob (mIn, mOut) =
      installHandler sigHUP Ignore Nothing
      installHandler sigKILL Ignore Nothing
      installHandler sigSTOP Ignore Nothing
-     result <- catch (do Hint.runInterpreter $ do
+     result <- catch (do Hint.runInterpreterWithArgsLibdir [] libdir $ do
                            _ <- liftIO $ installHandler sigINT Ignore Nothing
                            Hint.set [languageExtensions := [OverloadedStrings]]
                            --Hint.setImports libs
