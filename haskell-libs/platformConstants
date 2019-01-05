@@ -62,6 +62,7 @@ PlatformConstants {
     , pc_OFFSET_bdescr_start = 0
     , pc_OFFSET_bdescr_free = 8
     , pc_OFFSET_bdescr_blocks = 48
+    , pc_OFFSET_bdescr_flags = 46
     , pc_SIZEOF_CostCentreStack = 96
     , pc_OFFSET_CostCentreStack_mem_alloc = 72
     , pc_REP_CostCentreStack_mem_alloc = 8
@@ -93,8 +94,8 @@ PlatformConstants {
     , pc_OFFSET_StgUpdateFrame_updatee = 0
     , pc_OFFSET_StgFunInfoExtraFwd_arity = 4
     , pc_REP_StgFunInfoExtraFwd_arity = 4
-    , pc_SIZEOF_StgFunInfoExtraRev = 32
-    , pc_OFFSET_StgFunInfoExtraRev_arity = 28
+    , pc_SIZEOF_StgFunInfoExtraRev = 24
+    , pc_OFFSET_StgFunInfoExtraRev_arity = 20
     , pc_REP_StgFunInfoExtraRev_arity = 4
     , pc_MAX_SPEC_SELECTEE_SIZE = 15
     , pc_MAX_SPEC_AP_SIZE = 7

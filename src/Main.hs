@@ -2,13 +2,16 @@ module Main where
 
 import           Control.Exception
 import           Language.Haskell.Interpreter as Hint
+import           Language.Haskell.Interpreter.Unsafe as Hint
 import           Sound.Tidal.Context
 import           System.IO
 import           System.Posix.Signals
 import           Control.Monad
 import           Control.Concurrent.MVar
+import           Data.List (isPrefixOf,intercalate)
+import           Control.Concurrent
 
-data Response = HintOK {parsed :: ParamPattern}
+data Response = HintOK {parsed :: ControlPattern}
               | HintError {errorMessage :: String}
 
 instance Show Response where
@@ -19,7 +22,7 @@ libs = ["Prelude","Sound.Tidal.Context","Sound.OSC.Datum"
        -- , "Sound.Tidal.Simple"
        ]
 
-libdir = "/usr/local/tidali/haskell-libs"
+libdir = "haskell-libs"
 
 hintJob  :: (MVar String, MVar Response) -> IO ()
 hintJob (mIn, mOut) =
@@ -29,7 +32,8 @@ hintJob (mIn, mOut) =
      installHandler sigHUP Ignore Nothing
      installHandler sigKILL Ignore Nothing
      installHandler sigSTOP Ignore Nothing
-     result <- catch (do Hint.runInterpreterWithArgsLibdir [] libdir $ do
+--     result <- catch (do Hint.unsafeRunInterpreterWithArgs [] $ do
+     result <- catch (do Hint.unsafeRunInterpreterWithArgsLibdir [] libdir $ do
                            _ <- liftIO $ installHandler sigINT Ignore Nothing
                            Hint.set [languageExtensions := [OverloadedStrings]]
                            --Hint.setImports libs
@@ -65,7 +69,7 @@ hintJob (mIn, mOut) =
                 return ()
                               | otherwise =
              do liftIO $ hPutStrLn stderr $ "type: " ++ t
-                p <- Hint.interpret s (Hint.as :: ParamPattern)
+                p <- Hint.interpret s (Hint.as :: ControlPattern)
                 liftIO $ putMVar mOut $ HintOK p
                 liftIO $ takeMVar mIn
                 return ()
