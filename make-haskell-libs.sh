@@ -1,7 +1,7 @@
 #!/bin/bash
 
 HASKELL_LIBS=haskell-libs
-GHCLIB=/home/alex/.ghcup/ghc/8.6.3/lib/ghc-8.6.3
+GHCLIB=/home/munshkr/.stack/programs/x86_64-linux/ghc-8.6.5/lib/ghc-8.6.5/
 
 mkdir -p $HASKELL_LIBS/package.conf.d
 
@@ -34,15 +34,13 @@ cp -r $GHCLIB/package.conf.d/*.conf             $HASKELL_LIBS/package.conf.d/
 
 cp -r $GHCLIB/include                           $HASKELL_LIBS
 
-cabal sandbox init
-cabal install --only-dependencies
+stack exec -- cabal sandbox init
+stack exec --no-ghc-package-path -- cabal install --only-dependencies
 
-cp -r .cabal-sandbox/lib/x86_64-linux-ghc-8.6.3/* $HASKELL_LIBS
+cp -r .cabal-sandbox/lib/x86_64-linux-ghc-8.6.5/* $HASKELL_LIBS
 cp -r .cabal-sandbox/*-packages.conf.d/*.conf $HASKELL_LIBS/package.conf.d/
 
-# perl -p -i -e 's!(/home/alex/src/tidali/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.3|/home/alex/.ghcup/ghc/8.6.3/lib/ghc-8.6.3)!\$\{pkgroot\}!g' \
-perl -p -i -e 's!(/home/alex/src/tidali/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.3|/home/alex/.ghcup/ghc/8.6.3/lib/ghc-8.6.3)!\$\{pkgroot\}!g' \
+perl -p -i -e 's!(/home/munshkr/src/tidali/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.5|/home/munshkr/.stack/programs/x86_64-linux/ghc-8.6.5/lib/ghc-8.6.5/)!\$\{pkgroot\}!g' \
     $HASKELL_LIBS/package.conf.d/*.conf
 
-ghc-pkg-8.6.3 --package-db=$HASKELL_LIBS/package.conf.d recache
-
+stack exec -- ghc-pkg --package-db=$HASKELL_LIBS/package.conf.d recache
