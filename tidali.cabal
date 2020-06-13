@@ -1,8 +1,8 @@
 name:                tidali
 version:             0.1.0.0
--- synopsis:            
--- description:         
-license:             GPLv3
+-- synopsis:
+-- description:
+license:             GPL-3
 author:              Alex McLean
 maintainer:          alex@slab.org
 build-type:          Simple
@@ -10,7 +10,11 @@ cabal-version:       >=1.10
 
 executable tidali
   main-is:             Main.hs
-  build-depends:       base, hint, tidal, unix
+  build-depends:
+      base
+    , hint
+    , tidal
+    , unix
   hs-source-dirs:      src
   default-language:    Haskell2010
-  ld-options: -Wl,-rpath -Wl,$ORIGIN/c-libs
+  ld-options:          -Wl,-rpath -Wl,$ORIGIN/c-libs

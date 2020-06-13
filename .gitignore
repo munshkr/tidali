@@ -1,6 +1,4 @@
 /.stack-work/
-/.cabal-sandbox/
 /haskell-libs/
 /c-libs/
-cabal.sandbox.config
 /tidali

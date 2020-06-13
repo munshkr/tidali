@@ -1,6 +1,6 @@
 .PHONY: build c-libs haskell-libs clean
 
-HASKELL_DIR := haskell-libs
+HSLIBS_DIR := haskell-libs
 CLIBS_DIR := c-libs
 LIBS := /lib/x86_64-linux-gnu/libtinfo.so.5 \
 	/lib/x86_64-linux-gnu/libz.so.1 \
@@ -12,7 +12,7 @@ LIBS := /lib/x86_64-linux-gnu/libtinfo.so.5 \
 	/lib/x86_64-linux-gnu/libm.so.6 \
 	/usr/lib/x86_64-linux-gnu/libffi.so.6
 
-all: c-libs hs-libs build
+all: build c-libs hs-libs
 
 build:
 	stack install --local-bin-path .
@@ -25,4 +25,5 @@ hs-libs:
 	./make-haskell-libs.sh
 
 clean:
-	rm -r $(HSLIBS_DIR) $(CLIBS_DIR) .cabal-sandbox/
+	stack clean
+	rm -rf $(HSLIBS_DIR) $(CLIBS_DIR)

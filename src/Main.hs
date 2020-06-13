@@ -1,84 +1,42 @@
 module Main where
 
-import           Control.Exception
-import           Language.Haskell.Interpreter as Hint
-import           Language.Haskell.Interpreter.Unsafe as Hint
-import           Sound.Tidal.Context
-import           System.IO
-import           System.Posix.Signals
-import           Control.Monad
-import           Control.Concurrent.MVar
-import           Data.List (isPrefixOf,intercalate)
-import           Control.Concurrent
-
-data Response = HintOK {parsed :: ControlPattern}
-              | HintError {errorMessage :: String}
-
-instance Show Response where
-  show (HintOK p)    = "Ok: " ++ show p
-  show (HintError s) = "Error: " ++ s
-
-libs = ["Prelude","Sound.Tidal.Context","Sound.OSC.Datum"
-       -- , "Sound.Tidal.Simple"
-       ]
+import Language.Haskell.Interpreter as Hint
+import Language.Haskell.Interpreter.Unsafe as Hint
+import Sound.Tidal.Context
+import Control.Monad
+import Control.Concurrent.MVar
+import Data.List (intercalate)
 
 libdir = "haskell-libs"
 
-hintJob  :: (MVar String, MVar Response) -> IO ()
-hintJob (mIn, mOut) =
-  do installHandler sigINT Ignore Nothing
-     installHandler sigTERM Ignore Nothing
-     installHandler sigPIPE Ignore Nothing
-     installHandler sigHUP Ignore Nothing
-     installHandler sigKILL Ignore Nothing
-     installHandler sigSTOP Ignore Nothing
---     result <- catch (do Hint.unsafeRunInterpreterWithArgs [] $ do
-     result <- catch (do Hint.unsafeRunInterpreterWithArgsLibdir [] libdir $ do
-                           _ <- liftIO $ installHandler sigINT Ignore Nothing
-                           Hint.set [languageExtensions := [OverloadedStrings]]
-                           --Hint.setImports libs
-                           Hint.setImportsQ $ (Prelude.map (\x -> (x, Nothing)) libs) ++ [("Data.Map", Nothing)]
-                           hintLoop
-                     )
-               (\e -> return (Left $ UnknownError $ "exception" ++ show (e :: SomeException)))
-     let response = case result of
-          Left err -> HintError (parseError err)
-          Right p  -> HintOK p -- can happen
-         parseError (UnknownError s) = "Unknown error: " ++ s
-         parseError (WontCompile es) = "Compile error: " ++ (intercalate "\n" (Prelude.map errMsg es))
-         parseError (NotAllowed s) = "NotAllowed error: " ++ s
-         parseError (GhcException s) = "GHC Exception: " ++ s
-         --parseError _ = "Strange error"
+libs = ["Prelude", "Sound.Tidal.Context"]
 
-     takeMVar mIn
-     putMVar mOut response
-     hintJob (mIn, mOut)
-     where hintLoop = do s <- liftIO (readMVar mIn)
-                         t <- Hint.typeChecksWithDetails s
-                         --interp check s
-                         interp t s
-                         hintLoop
-           interp (Left errors) _ = do liftIO $ putMVar mOut $ HintError $ "Didn't typecheck" ++ (concatMap show errors)
-                                       liftIO $ takeMVar mIn
-                                       return ()
-           interp (Right t) s | "Data.String.IsString" `isPrefixOf` t =
-             do liftIO $ hPutStrLn stderr $ "type: " ++ t
-                p <- Hint.interpret s (Hint.as :: Pattern String)
-                liftIO $ putMVar mOut $ HintOK (sound p)
-                liftIO $ takeMVar mIn
-                return ()
-                              | otherwise =
-             do liftIO $ hPutStrLn stderr $ "type: " ++ t
-                p <- Hint.interpret s (Hint.as :: ControlPattern)
-                liftIO $ putMVar mOut $ HintOK p
-                liftIO $ takeMVar mIn
-                return ()
+main :: IO ()
+main = do r <- Hint.unsafeRunInterpreterWithArgsLibdir [] libdir f
+          case r of
+            Left err -> putStrLn $ errorString err
+            Right () -> return ()
 
--- ultra-minimal for now, just takes a line and interprets it
-main = do mIn <- newEmptyMVar
-          mOut <- newEmptyMVar
-          forkIO $ hintJob (mIn, mOut)
-          forever $ do code <- getLine
-                       putMVar mIn code
-                       result <- takeMVar mOut
-                       putStrLn $ show result
+errorString :: InterpreterError -> String
+errorString (WontCompile es) = intercalate "\n" (header : map unbox es)
+  where
+    header = "ERROR: Won't compile:"
+    unbox (GhcError e) = e
+errorString e = show e
+
+say :: String -> Interpreter ()
+say = liftIO . putStrLn
+
+emptyLine :: Interpreter ()
+emptyLine = say ""
+
+f :: Interpreter ()
+f =  do say "set language extensions"
+        Hint.set [languageExtensions := [OverloadedStrings]]
+        say "set imports"
+        Hint.setImportsQ $ (Prelude.map (\x -> (x, Nothing)) libs)
+        emptyLine
+        say "interpret 1 + 2"
+        p <- Hint.interpret "1 + 2" (Hint.as :: Int)
+        say $ show p
+        emptyLine
