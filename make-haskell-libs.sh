@@ -39,9 +39,11 @@ cp -r $GHCLIB/include $HASKELL_LIBS
 package_sandbox=$(stack exec -- sh -c 'echo $HASKELL_PACKAGE_SANDBOX')
 echo "Package sandbox: $package_sandbox"
 cp -r $package_sandbox/*.conf $HASKELL_LIBS/package.conf.d/
+#cp /home/munshkr/projects/tidali-yaxu/.stack-work/install/x86_64-linux/96c07c947873117e0d7b72d0adde45669bc781f6d34ec45d44bf655be474c09e/8.6.5/pkgdb/tidali-0.1.0-28UjbWzUlaD97r99yQkLZQ.conf $HASKELL_LIBS/package.conf.d/
 
 # Copy packages from snapshot sandbox
-cp -r /home/munshkr/.stack/snapshots/x86_64-linux/9f6a31a1b6bd2ddd2a3f10d4e6da4e0ef2aeccfda10b532a4f4acfb27236afab/8.6.5/lib/x86_64-linux-ghc-8.6.5/* $HASKELL_LIBS
+pkgdir=/home/munshkr/.stack/snapshots/x86_64-linux/921da8646748cbc8fee14a712d7c6f4fce6787ad69fb54cb7085bccad086aaaf/
+cp -r $pkgdir/8.6.5/lib/x86_64-linux-ghc-8.6.5/* $HASKELL_LIBS
 
 # Update paths in package config files
 perl -p -i -e 's!(/home/munshkr/projects/tidali-yaxu/.cabal-sandbox/lib/x86_64-linux-ghc-8.6.5|/home/munshkr/.stack/programs/x86_64-linux/ghc-8.6.5/lib/ghc-8.6.5/)!\$\{pkgroot\}/!g' \

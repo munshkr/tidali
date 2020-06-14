@@ -1,4 +1,5 @@
 /.stack-work/
 /haskell-libs/
 /c-libs/
-/tidali
+tidali
+tidali.tar.gz

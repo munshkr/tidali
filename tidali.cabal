@@ -1,20 +1,26 @@
 name:                tidali
-version:             0.1.0.0
+version:             0.1.0
 -- synopsis:
 -- description:
 license:             GPL-3
-author:              Alex McLean
+author:              Johannes Waldmann, Alex McLean, Damián Silvani
 maintainer:          alex@slab.org
 build-type:          Simple
 cabal-version:       >=1.10
 
 executable tidali
-  main-is:             Main.hs
+  hs-source-dirs: src
+  main-is: Main.hs
+  other-modules:
+      Sound.Tidal.Safe.Context
+    , Sound.Tidal.Safe.Boot
   build-depends:
       base
+    , tidal==1.4.9
+    , mtl
     , hint
-    , tidal
-    , unix
-  hs-source-dirs:      src
-  default-language:    Haskell2010
-  ld-options:          -Wl,-rpath -Wl,$ORIGIN/c-libs
+    -- , readline
+    , exceptions
+    , async
+  default-language: Haskell2010
+  ld-options: -Wl,-rpath -Wl,$ORIGIN/c-libs

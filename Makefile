@@ -1,5 +1,6 @@
-.PHONY: build c-libs haskell-libs clean
+.PHONY: build build-all tar c-libs haskell-libs clean
 
+BIN := tidali
 HSLIBS_DIR := haskell-libs
 CLIBS_DIR := c-libs
 LIBS := /lib/x86_64-linux-gnu/libtinfo.so.5 \
@@ -12,7 +13,12 @@ LIBS := /lib/x86_64-linux-gnu/libtinfo.so.5 \
 	/lib/x86_64-linux-gnu/libm.so.6 \
 	/usr/lib/x86_64-linux-gnu/libffi.so.6
 
-all: build c-libs hs-libs
+all: build-all
+
+build-all: build c-libs hs-libs
+
+tar: build-all
+	tar czf $(BIN).tar.gz $(BIN) $(HSLIBS_DIR) $(CLIBS_DIR)
 
 build:
 	stack install --local-bin-path .

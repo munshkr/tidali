@@ -41,7 +41,8 @@ packages:
 #
 # extra-deps: []
 extra-deps:
-- tidal-1.5.2@sha256:a86ad0db12121276c6a22ae27011000167dc79832a5febaaafbbac4a2317f244,3674
+- readline-1.0.3.0@sha256:db011062b90fbfbbc8b02666d835742c1d4de1f990a89fc056ef8082f3e3cba0,912
+- tidal-1.4.9@sha256:ae3080a28b83b31f7b10b306b35418615e02eb9a07e346687ba5b8585f4668f7,3706
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

@@ -5,12 +5,19 @@
 
 packages:
 - completed:
-    hackage: tidal-1.5.2@sha256:a86ad0db12121276c6a22ae27011000167dc79832a5febaaafbbac4a2317f244,3674
+    hackage: readline-1.0.3.0@sha256:db011062b90fbfbbc8b02666d835742c1d4de1f990a89fc056ef8082f3e3cba0,912
+    pantry-tree:
+      size: 818
+      sha256: 661af71986cae04cb7dbffc3b0557ca94cf9e87ba163c70e91c59f4c5eaf5e64
+  original:
+    hackage: readline-1.0.3.0@sha256:db011062b90fbfbbc8b02666d835742c1d4de1f990a89fc056ef8082f3e3cba0,912
+- completed:
+    hackage: tidal-1.4.9@sha256:ae3080a28b83b31f7b10b306b35418615e02eb9a07e346687ba5b8585f4668f7,3706
     pantry-tree:
       size: 2809
-      sha256: 92f8d1b8fc8f5dc8cfe50fa943dc31eb80639263a0db24d1814ce338439bf5e4
+      sha256: a63c6c163afe60397f9b0076d1bd89b6e3b021b91ad71c8b758233d4c4d01ddb
   original:
-    hackage: tidal-1.5.2@sha256:a86ad0db12121276c6a22ae27011000167dc79832a5febaaafbbac4a2317f244,3674
+    hackage: tidal-1.4.9@sha256:ae3080a28b83b31f7b10b306b35418615e02eb9a07e346687ba5b8585f4668f7,3706
 snapshots:
 - completed:
     size: 524996
